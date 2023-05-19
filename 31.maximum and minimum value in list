@@ -1,0 +1,27 @@
+#include <stdio.h>
+
+void printMinMaxSequence(int list[], int size) {
+    int min = list[0];
+    int max = list[0];
+
+    for (int i = 1; i < size; i++) {
+        if (list[i] < min) {
+            min = list[i];
+        }
+
+        if (list[i] > max) {
+            max = list[i];
+        }
+
+        printf("Minimum: %d, Maximum: %d\n", min, max);
+    }
+}
+
+int main() {
+    int list[] = {5, 8, 2, 10, 3, 1};
+    int size = sizeof(list) / sizeof(list[0]);
+
+    printMinMaxSequence(list, size);
+
+    return 0;
+}
