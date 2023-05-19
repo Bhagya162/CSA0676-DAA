@@ -1,0 +1,64 @@
+#include <stdio.h>
+
+// Structure to represent an item
+struct Item {
+    int value;
+    int weight;
+};
+
+// Function to calculate the value-to-weight ratio of an item
+double valueToWeightRatio(struct Item item) {
+    return (double)item.value / item.weight;
+}
+
+// Function to perform the Knapsack problem using a greedy approach
+double knapsackGreedy(struct Item items[], int numItems, int capacity) {
+    // Calculate the value-to-weight ratios of all items
+    for (int i = 0; i < numItems; i++) {
+        items[i].valueToWeight = valueToWeightRatio(items[i]);
+    }
+
+    // Sort the items in descending order of value-to-weight ratio
+    for (int i = 0; i < numItems - 1; i++) {
+        for (int j = 0; j < numItems - i - 1; j++) {
+            if (items[j].valueToWeight < items[j + 1].valueToWeight) {
+                struct Item temp = items[j];
+                items[j] = items[j + 1];
+                items[j + 1] = temp;
+            }
+        }
+    }
+
+    double totalValue = 0.0;
+    int currentWeight = 0;
+
+    // Fill the knapsack with items greedily until capacity is reached
+    for (int i = 0; i < numItems; i++) {
+        if (currentWeight + items[i].weight <= capacity) {
+            totalValue += items[i].value;
+            currentWeight += items[i].weight;
+        } else {
+            double remainingCapacity = capacity - currentWeight;
+            totalValue += items[i].valueToWeight * remainingCapacity;
+            break;
+        }
+    }
+
+    return totalValue;
+}
+
+int main() {
+    struct Item items[] = {
+        {60, 10},  // Item 1: value = 60, weight = 10
+        {100, 20}, // Item 2: value = 100, weight = 20
+        {120, 30}  // Item 3: value = 120, weight = 30
+    };
+    int numItems = sizeof(items) / sizeof(items[0]);
+    int capacity = 50;
+
+    double maxValue = knapsackGreedy(items, numItems, capacity);
+
+    printf("Maximum value that can be obtained: %.2lf\n", maxValue);
+
+    return 0;
+}
