@@ -1,0 +1,88 @@
+#include <stdio.h>
+
+// Function to merge two sorted subarrays
+void merge(int arr[], int left[], int right[], int leftSize, int rightSize) {
+    int i = 0; // Index for the left subarray
+    int j = 0; // Index for the right subarray
+    int k = 0; // Index for the merged array
+
+    // Merge elements from left and right subarrays into the main array
+    while (i < leftSize && j < rightSize) {
+        if (left[i] <= right[j]) {
+            arr[k] = left[i];
+            i++;
+        } else {
+            arr[k] = right[j];
+            j++;
+        }
+        k++;
+    }
+
+    // Copy the remaining elements from the left subarray, if any
+    while (i < leftSize) {
+        arr[k] = left[i];
+        i++;
+        k++;
+    }
+
+    // Copy the remaining elements from the right subarray, if any
+    while (j < rightSize) {
+        arr[k] = right[j];
+        j++;
+        k++;
+    }
+}
+
+// Function to perform Merge Sort
+void mergeSort(int arr[], int size) {
+    if (size <= 1) {
+        return; // Base case: array is already sorted
+    }
+
+    // Calculate the middle index
+    int mid = size / 2;
+
+    // Create subarrays for the left and right halves
+    int left[mid];
+    int right[size - mid];
+
+    // Fill the left subarray
+    for (int i = 0; i < mid; i++) {
+        left[i] = arr[i];
+    }
+
+    // Fill the right subarray
+    for (int i = mid; i < size; i++) {
+        right[i - mid] = arr[i];
+    }
+
+    // Recursively sort the left and right subarrays
+    mergeSort(left, mid);
+    mergeSort(right, size - mid);
+
+    // Merge the sorted subarrays
+    merge(arr, left, right, mid, size - mid);
+}
+
+// Function to print an array
+void printArray(int arr[], int size) {
+    for (int i = 0; i < size; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+    int arr[] = {12, 45, 67, 8, 23, 56, 14, 7};
+    int size = sizeof(arr) / sizeof(arr[0]);
+
+    printf("Original array: ");
+    printArray(arr, size);
+
+    mergeSort(arr, size);
+
+    printf("Sorted array: ");
+    printArray(arr, size);
+
+    return 0;
+}
