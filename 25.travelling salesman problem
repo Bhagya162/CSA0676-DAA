@@ -1,0 +1,65 @@
+#include <stdio.h>
+#include <limits.h>
+
+#define MAX_CITIES 10
+
+int tsp(int graph[MAX_CITIES][MAX_CITIES], int n, int startCity) {
+    int dp[1 << MAX_CITIES][MAX_CITIES];
+    int visited = (1 << n) - 1;
+
+    for (int i = 0; i < (1 << MAX_CITIES); i++) {
+        for (int j = 0; j < MAX_CITIES; j++) {
+            dp[i][j] = INT_MAX;
+        }
+    }
+
+    dp[visited][startCity] = 0;
+
+    for (int mask = visited - 1; mask >= 0; mask--) {
+        for (int currentCity = 0; currentCity < n; currentCity++) {
+            if (!((mask >> currentCity) & 1)) {
+                for (int nextCity = 0; nextCity < n; nextCity++) {
+                    if ((mask >> nextCity) & 1) {
+                        int newMask = mask | (1 << currentCity);
+                        dp[mask][currentCity] = 
+                            (dp[mask][currentCity] < dp[newMask][nextCity] + graph[currentCity][nextCity]) ? dp[mask][currentCity] : dp[newMask][nextCity] + graph[currentCity][nextCity];
+                    }
+                }
+            }
+        }
+    }
+
+    int minCost = INT_MAX;
+    for (int lastCity = 0; lastCity < n; lastCity++) {
+        int currentCost = dp[1][lastCity] + graph[startCity][lastCity];
+        minCost = (currentCost < minCost) ? currentCost : minCost;
+    }
+
+    return minCost;
+}
+
+int main() {
+    int graph[MAX_CITIES][MAX_CITIES];
+    int n;
+
+    printf("Enter the number of cities: ");
+    scanf("%d", &n);
+
+    printf("Enter the adjacency matrix:\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            scanf("%d", &graph[i][j]);
+        }
+    }
+
+    int startCity;
+
+    printf("Enter the starting city (0 to %d): ", n - 1);
+    scanf("%d", &startCity);
+
+    int minCost = tsp(graph, n, startCity);
+
+    printf("Minimum cost of the Travelling Salesman Problem: %d\n", minCost);
+
+    return 0;
+}
