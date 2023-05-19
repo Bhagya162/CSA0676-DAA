@@ -1,0 +1,43 @@
+#include <stdio.h>
+
+// Function to check if a number is prime
+int isPrime(int num) {
+    if (num <= 1) {
+        return 0; // 0 and 1 are not prime
+    }
+
+    for (int i = 2; i * i <= num; i++) {
+        if (num % i == 0) {
+            return 0; // If num is divisible by any number, it's not prime
+        }
+    }
+
+    return 1; // If num is not divisible by any number, it's prime
+}
+
+// Function to generate prime numbers within a range
+void generatePrimes(int start, int end) {
+    printf("Prime numbers between %d and %d are:\n", start, end);
+
+    for (int i = start; i <= end; i++) {
+        if (isPrime(i)) {
+            printf("%d ", i);
+        }
+    }
+
+    printf("\n");
+}
+
+int main() {
+    int start, end;
+
+    printf("Enter the range to generate prime numbers:\n");
+    printf("Start: ");
+    scanf("%d", &start);
+    printf("End: ");
+    scanf("%d", &end);
+
+    generatePrimes(start, end);
+
+    return 0;
+}
