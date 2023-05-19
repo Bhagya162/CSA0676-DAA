@@ -1,0 +1,86 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include <limits.h>
+
+#define MAX 10
+
+int n;
+int minCost;
+int costMatrix[MAX][MAX];
+bool assigned[MAX];
+
+void initialize() {
+    minCost = INT_MAX;
+
+    printf("Enter the number of workers/tasks (n): ");
+    scanf("%d", &n);
+
+    printf("Enter the cost matrix:\n");
+    for (int i = 0; i < n; i++) {
+        assigned[i] = false;
+        for (int j = 0; j < n; j++) {
+            scanf("%d", &costMatrix[i][j]);
+        }
+    }
+}
+
+void printAssignment(int assignment[]) {
+    printf("Assignment: ");
+    for (int i = 0; i < n; i++) {
+        printf("(%d, %d) ", i, assignment[i]);
+    }
+    printf("\n");
+}
+
+int calculateCost(int assignment[]) {
+    int totalCost = 0;
+    for (int i = 0; i < n; i++) {
+        totalCost += costMatrix[i][assignment[i]];
+    }
+    return totalCost;
+}
+
+void assignTask(int worker, int assignment[], int costSoFar) {
+    if (worker == n) {
+        if (costSoFar < minCost) {
+            minCost = costSoFar;
+            printAssignment(assignment);
+        }
+        return;
+    }
+
+    for (int task = 0; task < n; task++) {
+        if (!assigned[task]) {
+            assignment[worker] = task;
+            assigned[task] = true;
+
+            int reducedCost = costSoFar + costMatrix[worker][task];
+
+            if (reducedCost < minCost) {
+                assignTask(worker + 1, assignment, reducedCost);
+            }
+
+            assigned[task] = false;
+            assignment[worker] = -1;
+        }
+    }
+}
+
+void solveAssignmentProblem() {
+    int assignment[MAX];
+    for (int i = 0; i < n; i++) {
+        assignment[i] = -1;
+    }
+
+    assignTask(0, assignment, 0);
+
+    printf("Minimum Cost: %d\n", minCost);
+}
+
+int main() {
+    initialize();
+
+    solveAssignmentProblem();
+
+    return 0;
+}
