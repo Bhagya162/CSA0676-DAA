@@ -1,0 +1,43 @@
+#include <stdio.h>
+
+long long binomialCoefficient(int n, int k) {
+    if (k == 0 || k == n) {
+        return 1;
+    } else {
+        long long numerator = 1;
+        long long denominator = 1;
+
+        for (int i = 1; i <= k; i++) {
+            numerator *= n - i + 1;
+            denominator *= i;
+        }
+
+        return numerator / denominator;
+    }
+}
+
+void printPascalTriangle(int numRows) {
+    for (int row = 0; row < numRows; row++) {
+        for (int space = 0; space < numRows - row - 1; space++) {
+            printf("  ");
+        }
+
+        for (int col = 0; col <= row; col++) {
+            long long coefficient = binomialCoefficient(row, col);
+            printf("%-4lld ", coefficient);
+        }
+
+        printf("\n");
+    }
+}
+
+int main() {
+    int numRows;
+
+    printf("Enter the number of rows for Pascal's triangle: ");
+    scanf("%d", &numRows);
+
+    printPascalTriangle(numRows);
+
+    return 0;
+}
