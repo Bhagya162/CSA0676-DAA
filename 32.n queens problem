@@ -1,0 +1,86 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define N 8
+
+void printBoard(int board[N][N]) {
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            printf("%c ", board[i][j] ? 'Q' : '-');
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
+bool isSafe(int board[N][N], int row, int col) {
+    int i, j;
+
+    // Check if there is a queen in the same row
+    for (i = 0; i < col; i++) {
+        if (board[row][i]) {
+            return false;
+        }
+    }
+
+    // Check if there is a queen in the upper left diagonal
+    for (i = row, j = col; i >= 0 && j >= 0; i--, j--) {
+        if (board[i][j]) {
+            return false;
+        }
+    }
+
+    // Check if there is a queen in the lower left diagonal
+    for (i = row, j = col; i < N && j >= 0; i++, j--) {
+        if (board[i][j]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool solveNQueensUtil(int board[N][N], int col) {
+    // Base case: all queens have been placed
+    if (col == N) {
+        printBoard(board);
+        return true;
+    }
+
+    bool res = false;
+    for (int i = 0; i < N; i++) {
+        if (isSafe(board, i, col)) {
+            // Place the queen on the current cell
+            board[i][col] = 1;
+
+            // Recursively place the queens in the next columns
+            res = solveNQueensUtil(board, col + 1) || res;
+
+            // Backtrack and remove the queen from the current cell
+            board[i][col] = 0;
+        }
+    }
+
+    return res;
+}
+
+void solveNQueens() {
+    int board[N][N];
+
+    // Initialize the board with 0s
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            board[i][j] = 0;
+        }
+    }
+
+    if (!solveNQueensUtil(board, 0)) {
+        printf("No solution found.\n");
+    }
+}
+
+int main() {
+    solveNQueens();
+
+    return 0;
+}
